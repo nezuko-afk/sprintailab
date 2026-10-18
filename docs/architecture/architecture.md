@@ -6,9 +6,9 @@ Status: **partly implemented**. REA facts below come from the upstream README an
 | Component | State |
 | --- | --- |
 | MCP governance proxy (`src/proxy.ts`, `src/index.ts`) | Built, tested against real REA 6.6.0 |
-| Policy engine (`src/policy.ts`) | Built: tier limit and fail-closed unknown tools. No roles yet |
+| Policy engine (`src/policy.ts`) | Built: tier limit, fail-closed unknown tools, tier 3 blocked. No roles yet |
 | Audit log (`src/audit.ts`) | Built: hash-chained JSONL with `verifyChain` |
-| Authorization gate | Not built. Tiers 2 and 3 are simply denied for now |
+| Authorization gate (`src/gate.ts`, `src/authorization.ts`, `src/elicit.ts`, `src/cli.ts`) | Built: scoped, expiring declarations by in-client prompt or terminal. Tested with the MCP SDK; not yet with a real agent client |
 | Sandbox controller | Not built |
 
 ## Idea in one line
@@ -87,6 +87,10 @@ flowchart LR
 
 ## Known limits of this design
 
+- The authorizations file is writable by anyone running as the same OS user, including an agent
+  with shell access. The terminal command requires a real terminal, but that is a speed bump, not
+  a wall. Separating the proxy and its files under a different OS user, or a central service,
+  is the fix and is on the roadmap.
 - A user who runs upstream REA directly bypasses our controls. Guardrails reduce
   misuse inside our product; they cannot stop it everywhere.
 - The authorization gate records a **declaration**. It does not prove ownership.

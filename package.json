@@ -4,7 +4,7 @@
   "private": true,
   "description": "Governance proxy that sits between an AI agent and REA (rea mcp)",
   "type": "module",
-  "bin": { "sprintailab-proxy": "dist/index.js" },
+  "bin": { "sprintailab-proxy": "dist/index.js", "sprintailab": "dist/cli-bin.js" },
   "engines": { "node": "^22.19.0 || ^24.11.0 || >=26.0.0" },
   "scripts": {
     "build": "tsc -p tsconfig.json",

@@ -4,6 +4,7 @@ export interface TierToolEntry {
   name: string;
   kind: string;
   tier: Tier;
+  authExempt?: boolean;
 }
 
 export interface TiersFile {

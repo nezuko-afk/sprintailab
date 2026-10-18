@@ -4,15 +4,23 @@ Status: **draft for legal review**. This is engineering intent, not legal advice
 
 ## Controls
 
-| # | Control | Purpose | Enforced by |
+| # | Control | Purpose | State |
 | --- | --- | --- | --- |
-| 1 | Authorization declaration per target | Make users state ownership or written permission before analysis | Authorization gate |
-| 2 | Tool risk tiers | Separate read-only static tools from tools that run the target | Policy engine |
-| 3 | Blocked target categories | Refuse banking and payment apps, government and telecom software, and anything on a client-specific deny list | Policy engine |
-| 4 | Sandbox for runtime tools | Never execute an unknown target on a user workstation | Sandbox controller |
-| 5 | Roles | Only vetted staff can use high-tier tools | Policy engine |
-| 6 | Append-only audit log | Who analyzed what, when, under which declaration | Audit log |
-| 7 | Acceptable-use policy and contract terms | Legal backstop for what code cannot prevent | Commercial process |
+| 1 | Authorization declaration per target, scoped, expiring (4h default, 24h max), revocable | Make a person state ownership or written permission before analysis | Built |
+| 2 | Tool risk tiers; unknown tools denied | Separate read-only tools from tools that run or change things | Built |
+| 3 | Reference id required for tier 2 (live system) work | Tie live-system access to a ticket, contract or permission | Built |
+| 4 | Tier 3 denied until a sandbox exists | Never execute an unknown target on a workstation | Built as a block; sandbox not built |
+| 5 | Append-only, hash-chained audit log | Who analyzed what, when, under which declaration | Built, local file only |
+| 6 | Blocked target categories (banking, payments, government, telecom, client deny lists) | Refuse sensitive software outright | Not built |
+| 7 | Roles and second approval | Only vetted staff use higher tiers | Not built |
+| 8 | Acceptable-use policy and contract terms | Legal backstop for what code cannot prevent | Commercial process |
+
+## What the person declares
+
+The recorded statement (version 1) is: *"I own this target or hold written permission to analyze it, and I
+will use the results lawfully."* Each authorization stores the declarant, method (prompt or terminal),
+scopes, highest tier, reference, start and expiry, and the statement version. The audit log copies this
+the first time the authorization is relied on.
 
 ## Tool tiers
 
@@ -38,6 +46,8 @@ These are questions to bring to a lawyer, not conclusions.
 
 ## Residual risks we cannot code away
 
-- Declarations can be false.
+- Declarations can be false. They are recorded, not verified.
+- An agent with shell access as the same OS user can write the authorizations file directly. Run the proxy and its files under a different OS user, or centrally, for real separation.
+- Target detection is heuristic; see the README.
 - Upstream REA can be run without our proxy.
 - Model providers see tool results unless a private deployment is used.

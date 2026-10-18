@@ -40,6 +40,17 @@ const OVERRIDES = {
   close_frida_session: [3, "Part of live process instrumentation"],
 };
 
+// Pure status tools that report on REA or its helper clients and name no target.
+// They may run without an authorization. Keep this list short and justified.
+const AUTH_EXEMPT = {
+  binary_session: "Reports session and server status without starting analysis",
+  inspect_apktool_client: "Reports whether the Apktool client is available",
+  inspect_pcap_client: "Reports whether the pcap client is available",
+  inspect_jeb_client: "Reports whether the JEB client is available",
+  inspect_adb_client: "Reports whether the adb client is available",
+  list_architectures: "Lists supported architectures, static information",
+};
+
 const flagTier = (e) => {
   if (e.executesForeignCode || e.mutatesDevice) return 3;
   if (e.accessesNetwork || e.mutatesTarget || e.changesUiState) return 2;
@@ -58,12 +69,13 @@ const tools = catalog
       derivedTier: derived,
       override: o ? o[1] : null,
       requiresSession: t.requiresSession,
+      authExempt: Object.hasOwn(AUTH_EXEMPT, t.name),
       effects: Object.keys(t.effects).filter((k) => t.effects[k] === true && k !== "idempotent" && k !== "mutatesSession").sort(),
     };
   })
   .sort((a, b) => (a.name < b.name ? -1 : 1));
 
-for (const name of Object.keys(OVERRIDES))
+for (const name of [...Object.keys(OVERRIDES), ...Object.keys(AUTH_EXEMPT)])
   if (!tools.some((t) => t.name === name)) console.warn(`WARN: override for unknown tool ${name}`);
 
 const counts = { 0: 0, 1: 0, 2: 0, 3: 0 };
@@ -85,6 +97,7 @@ const list = (n) => byTier(n).map((t) => `\`${t.name}\``).join(", ");
 const kinds = {};
 for (const t of tools) { kinds[t.kind] ??= [0, 0, 0, 0]; kinds[t.kind][t.tier]++; }
 const kindRows = Object.entries(kinds).sort().map(([k, v]) => `| ${k} | ${v.join(" | ")} |`).join("\n");
+const exemptRows = Object.entries(AUTH_EXEMPT).map(([n, r]) => `| \`${n}\` | ${r} |`).join("\n");
 const ovRows = tools.filter((t) => t.override).map((t) => `| \`${t.name}\` | ${t.derivedTier} | ${t.tier} | ${t.override} |`).join("\n");
 
 const md = `# Tool risk tiers
@@ -103,16 +116,16 @@ ${[0, 1, 2, 3].map((n) => `| ${n} | ${TIERS[n].name} | ${TIERS[n].rule} | ${coun
 **Fail closed:** a tool that is not in \`policy/tool-tiers.json\` is denied. When upstream
 REA is updated, regenerate this file and review the diff before allowing new tools.
 
-## Proposed handling
+## How each tier is handled today
 
-| Tier | Authorization declaration | Sandbox | Minimum role |
-| --- | --- | --- | --- |
-| 0 | Once per session | No | Viewer |
-| 1 | Per target | No | Analyst |
-| 2 | Per target, with reference id | Recommended | Analyst |
-| 3 | Per target, with reference id and second approval | Required | Senior analyst |
+| Tier | What the proxy requires before forwarding the call |
+| --- | --- |
+| 0 | Nothing if the call names no target. If it names a file, URL or device, a person's authorization must cover it |
+| 1 | A person's authorization (tier 1 or higher) covering every named target, or any active one if none is named |
+| 2 | Same, with an authorization of tier 2, which needs a reference id (ticket, contract or written permission) |
+| 3 | Always denied (R4) until a sandbox controller exists |
 
-This is a proposal for review, not a final policy.
+Authorizations are scoped, expire (default 4h, maximum 24h) and can be revoked. Roles are not implemented yet.
 
 ## Tier 3: executes or modifies (${counts[3]})
 
@@ -133,6 +146,15 @@ ${kindRows}
 | Tool | Derived | Final | Reason |
 | --- | --- | --- | --- |
 ${ovRows}
+
+## Tools that may run without an authorization
+
+Status-only tools that name no target (all other tools need an authorization that covers
+their target, or any active one when they name none).
+
+| Tool | Reason |
+| --- | --- |
+${exemptRows}
 
 ## Known conservative choices
 

@@ -3,7 +3,9 @@ import { Client } from "@modelcontextprotocol/client";
 import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
 import { StdioServerTransport } from "@modelcontextprotocol/server/stdio";
 import { AuditLog } from "./audit.js";
+import { AuthorizationStore } from "./authorization.js";
 import { loadConfig } from "./config.js";
+import { Gate } from "./gate.js";
 import { loadTiers, Policy } from "./policy.js";
 import { createProxyServer } from "./proxy.js";
 
@@ -14,7 +16,9 @@ async function main(): Promise<void> {
   const tiersUrl = new URL("../policy/tool-tiers.json", import.meta.url);
   const tiers = loadTiers(tiersUrl);
   const config = loadConfig(process.env, tiers.generatedFrom.version);
-  const policy = new Policy(tiers, config.maxTier);
+  const policy = new Policy(tiers, { maxTier: config.maxTier });
+  const store = new AuthorizationStore(config.authPath);
+  const gate = new Gate(store);
   const audit = new AuditLog(config.auditPath, config.actor);
 
   const upstreamTransport = new StdioClientTransport({
@@ -41,14 +45,16 @@ async function main(): Promise<void> {
   audit.append("startup", {
     versionMismatch,
     maxTier: config.maxTier,
+    authPath: config.authPath,
+    elicitation: config.elicit,
     reaCommand: [config.reaCommand, ...config.reaArgs],
     tiersVersion: tiers.generatedFrom.version,
     tiersCommit: tiers.generatedFrom.commit,
     upstreamServer: upstream.getServerVersion() ?? null,
   });
-  log(`REA connected. Tier limit ${config.maxTier}. Audit log: ${config.auditPath}`);
+  log(`REA connected. Tier limit ${config.maxTier}. Audit: ${config.auditPath}. Authorizations: ${config.authPath}`);
 
-  const server = createProxyServer({ upstream, policy, audit });
+  const server = createProxyServer({ upstream, policy, gate, store, audit, actor: config.actor, elicit: config.elicit });
   await server.connect(new StdioServerTransport());
 
   const shutdown = async () => {

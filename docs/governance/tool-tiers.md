@@ -17,16 +17,16 @@ effect flags in its generated MCP tool catalog. Machine-readable copy: `policy/t
 **Fail closed:** a tool that is not in `policy/tool-tiers.json` is denied. When upstream
 REA is updated, regenerate this file and review the diff before allowing new tools.
 
-## Proposed handling
+## How each tier is handled today
 
-| Tier | Authorization declaration | Sandbox | Minimum role |
-| --- | --- | --- | --- |
-| 0 | Once per session | No | Viewer |
-| 1 | Per target | No | Analyst |
-| 2 | Per target, with reference id | Recommended | Analyst |
-| 3 | Per target, with reference id and second approval | Required | Senior analyst |
+| Tier | What the proxy requires before forwarding the call |
+| --- | --- |
+| 0 | Nothing if the call names no target. If it names a file, URL or device, a person's authorization must cover it |
+| 1 | A person's authorization (tier 1 or higher) covering every named target, or any active one if none is named |
+| 2 | Same, with an authorization of tier 2, which needs a reference id (ticket, contract or written permission) |
+| 3 | Always denied (R4) until a sandbox controller exists |
 
-This is a proposal for review, not a final policy.
+Authorizations are scoped, expire (default 4h, maximum 24h) and can be revoked. Roles are not implemented yet.
 
 ## Tier 3: executes or modifies (24)
 
@@ -72,6 +72,20 @@ This is a proposal for review, not a final policy.
 | `start_frida_session` | 2 | 3 | Attaches to or spawns a live process |
 | `unload_frida_script` | 2 | 3 | Part of live process instrumentation |
 | `unset_bookmark` | 2 | 1 | Edits the analysis database, not the analyzed software |
+
+## Tools that may run without an authorization
+
+Status-only tools that name no target (all other tools need an authorization that covers
+their target, or any active one when they name none).
+
+| Tool | Reason |
+| --- | --- |
+| `binary_session` | Reports session and server status without starting analysis |
+| `inspect_apktool_client` | Reports whether the Apktool client is available |
+| `inspect_pcap_client` | Reports whether the pcap client is available |
+| `inspect_jeb_client` | Reports whether the JEB client is available |
+| `inspect_adb_client` | Reports whether the adb client is available |
+| `list_architectures` | Lists supported architectures, static information |
 
 ## Known conservative choices
 
