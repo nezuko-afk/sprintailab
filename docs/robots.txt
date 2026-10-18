@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://nezuko-afk.github.io/sprintailab/sitemap.xml

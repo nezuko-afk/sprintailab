@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>sprintailab: Governed AI Reverse Engineering for MCP Agents</title>
+<meta name="description" content="sprintailab is an open-source MCP proxy that puts authorization, risk tiers and a tamper-evident audit log in front of AI-assisted reverse engineering with REA. Built for IT services teams in India. Early build.">
+<link rel="canonical" href="https://nezuko-afk.github.io/sprintailab/">
+<meta name="robots" content="index,follow">
+<meta property="og:type" content="website">
+<meta property="og:title" content="sprintailab: Governed AI Reverse Engineering">
+<meta property="og:description" content="Who is allowed to point an AI agent at what? Authorization, risk tiers and an audit log in front of REA.">
+<meta property="og:url" content="https://nezuko-afk.github.io/sprintailab/">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="sprintailab: Governed AI Reverse Engineering">
+<meta name="twitter:description" content="Open-source MCP proxy: authorization, risk tiers and a tamper-evident audit log for AI-assisted reverse engineering.">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"SoftwareSourceCode","name":"sprintailab","description":"Open-source MCP governance proxy for AI-assisted reverse engineering with REA: scoped authorizations, tool risk tiers and a hash-chained audit log.","codeRepository":"https://github.com/nezuko-afk/sprintailab","programmingLanguage":"TypeScript","author":{"@type":"Organization","name":"Sprint AI Lab"},"url":"https://nezuko-afk.github.io/sprintailab/"}
+</script>
+<style>
+:root{--bg:#0e1814;--panel:#15241e;--text:#eef3f0;--muted:#9bb0a6;--accent:#6ec88c;--line:#244034}
+@media (prefers-color-scheme:light){:root:not([data-theme=dark]){--bg:#f6faf7;--panel:#fff;--text:#13211a;--muted:#4c6357;--accent:#1f7a45;--line:#d3e2d9}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:17px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+main{max-width:860px;margin:0 auto;padding:48px 16px 80px}
+.eyebrow{color:var(--accent);font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:13px}
+h1{font-size:clamp(32px,6vw,52px);line-height:1.1;margin:.3em 0}h2{margin-top:2.2em;font-size:26px}
+p.lead{font-size:20px;color:var(--muted)}
+.btn{display:inline-block;margin:8px 8px 0 0;padding:12px 20px;border-radius:10px;font-weight:600;text-decoration:none;border:1px solid var(--accent);color:var(--bg);background:var(--accent)}
+.btn.alt{background:transparent;color:var(--accent)}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}.card h3{margin:0 0 6px;font-size:18px}.card p{margin:0;color:var(--muted);font-size:15px}
+table{width:100%;border-collapse:collapse;font-size:15px}th,td{text-align:left;padding:10px;border-bottom:1px solid var(--line)}
+code{background:var(--panel);padding:2px 6px;border-radius:6px;font-size:.92em}
+pre{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;overflow:auto;font-size:14px}
+details{border-bottom:1px solid var(--line);padding:12px 0}summary{cursor:pointer;font-weight:600}
+footer{margin-top:60px;color:var(--muted);font-size:14px}a{color:var(--accent)}
+</style>
+</head>
+<body>
+<main>
+<div class="eyebrow">Sprint AI Lab &middot; early build</div>
+<h1>Who is allowed to point an AI agent at what?</h1>
+<p class="lead">sprintailab is an open-source MCP proxy that sits between your AI agent and <a href="https://github.com/morluto/rea">REA (Reverse Engineer Anything)</a>. It checks authorization, enforces risk tiers on all 207 tools, and logs every decision in a tamper-evident audit trail.</p>
+<a class="btn" href="https://github.com/nezuko-afk/sprintailab">View on GitHub</a>
+<a class="btn alt" href="https://github.com/nezuko-afk/sprintailab#architecture">Architecture and diagrams</a>
+
+<h2>The problem</h2>
+<p>AI agents can now analyze binaries, Android apps, Electron apps, websites and firmware without source code. That helps with legacy modernization, vendor due diligence, interoperability and first-pass security review. It is also easy to misuse. IT services teams need controls they can explain to a client.</p>
+
+<h2>What sprintailab enforces</h2>
+<div class="grid">
+<div class="card"><h3>Authorization per target</h3><p>A person declares ownership or written permission for a folder, origin, device or package. Scoped, expiring, revocable.</p></div>
+<div class="card"><h3>Risk tiers</h3><p>All 207 REA tools classified 0 to 3. Unknown tools are denied. Tools that execute code stay blocked until a sandbox exists.</p></div>
+<div class="card"><h3>Audit log</h3><p>Hash-chained record of who, which tool, which targets, under which authorization. Verifiable from the CLI.</p></div>
+<div class="card"><h3>REA stays unmodified</h3><p>Included as a submodule and run as a normal process, so upstream updates are a version bump.</p></div>
+</div>
+
+<h2>How a call is decided</h2>
+<table>
+<tr><th>Step</th><th>Result</th></tr>
+<tr><td>Tool not on the approved list</td><td>Denied (R1)</td></tr>
+<tr><td>Tool above this deployment's tier limit</td><td>Denied (R2)</td></tr>
+<tr><td>Tier 3: executes or modifies</td><td>Denied until sandbox exists (R4)</td></tr>
+<tr><td>Target not covered by an active authorization</td><td>Person is asked, or denied (R3, R5)</td></tr>
+<tr><td>Covered</td><td>Forwarded to REA, result and evidence id logged</td></tr>
+</table>
+
+<h2>Try it</h2>
+<pre>git clone --recurse-submodules https://github.com/nezuko-afk/sprintailab.git
+cd sprintailab && npm install && npm run build && npm test
+claude mcp add sprintailab -- node "$PWD/dist/index.js"</pre>
+
+<h2>Honest status</h2>
+<p>Working end to end against REA 6.6.0 with 73 automated tests. Not built yet: sandbox, roles and second approval, central audit store, India-specific legal review. Not legal advice.</p>
+
+<h2>FAQ</h2>
+<details><summary>Is it a fork of REA?</summary><p>No. REA (MIT, by morluto) runs unmodified behind the proxy.</p></details>
+<details><summary>Which AI agents work with it?</summary><p>Any client that supports local stdio MCP servers, such as Claude Code, Cursor, Codex and Gemini CLI.</p></details>
+<details><summary>Does it prevent someone running REA directly?</summary><p>No. It governs use through this product.</p></details>
+<details><summary>Is reverse engineering legal in India?</summary><p>It depends on the software, licence and purpose. Take it to counsel; the open questions are listed in the repo.</p></details>
+
+<footer>&copy; Sprint AI Lab. Built on open-source REA (MIT). Source: <a href="https://github.com/nezuko-afk/sprintailab">github.com/nezuko-afk/sprintailab</a></footer>
+</main>
+</body>
+</html>

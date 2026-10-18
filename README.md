@@ -1,8 +1,16 @@
-# sprintailab
+# sprintailab: governed AI reverse engineering (MCP proxy for REA)
 
-**A governed proxy that sits between an AI agent and [REA (Reverse Engineer Anything)](https://github.com/morluto/rea)**, so software analysis only happens on targets a person has authorized, with every decision written to a tamper-evident audit log. Built for services teams in the Indian market who want to offer reverse-engineering-assisted work (legacy modernization, vendor due diligence, interoperability, first-pass security review) with controls they can explain to a client.
+[![Tests](https://img.shields.io/badge/tests-73%20passing-brightgreen)](src) [![Node](https://img.shields.io/badge/node-22.19%2B%20%7C%2024.11%2B-blue)](#prerequisites) [![Status](https://img.shields.io/badge/status-early%20build-orange)](#security-model-and-known-limits) [![Protocol](https://img.shields.io/badge/protocol-MCP-6e56cf)](https://modelcontextprotocol.io)
 
-> **Status:** early, working end to end against real REA 6.6.0. Built: tier policy, fail-closed unknown tools, authorization gate (client prompt or terminal), hash-chained audit log, 73 automated tests. **Not built:** sandbox for tier 3 tools, roles, central deployment. This is engineering work, not legal advice; see [Licensing and legal](#licensing-and-legal).
+**sprintailab is an open-source governance layer for AI-assisted reverse engineering.** It is an MCP (Model Context Protocol) proxy that sits between an AI agent (Claude Code, Cursor, Codex, Gemini CLI) and [REA, Reverse Engineer Anything](https://github.com/morluto/rea). Before any analysis runs, it checks that a person has authorized the target, enforces risk tiers on all 207 REA tools, and writes every decision to a tamper-evident audit log.
+
+**Why this exists:** AI agents can now analyze binaries, Android apps, Electron apps, websites and firmware without source code. That is useful for legacy modernization, vendor due diligence, interoperability and first-pass security review, and just as easy to misuse. sprintailab gives IT services teams, especially in India, controls they can show a client: who authorized what, under which scope, and what actually ran.
+
+**Who it is for:** IT services and consulting teams, security reviewers, and engineering leads who need AI agents on software they own or are authorized to analyze, with an audit trail, and who need to answer "is this being misused?" with evidence.
+
+> **Status:** early build, working end to end against real REA 6.6.0. Built: tier policy, fail-closed unknown tools, authorization gate (client prompt or terminal), hash-chained audit log, 73 automated tests. **Not built:** sandbox for tier 3 tools, roles, central deployment, India-specific legal review. This is engineering work, not legal advice; see [Licensing and legal](#licensing-and-legal).
+
+**Keywords:** AI governance, responsible AI, reverse engineering, MCP server, Model Context Protocol, audit log, authorization, AI agent security, software due diligence, DPDP, India.
 
 ## Contents
 
@@ -23,7 +31,8 @@
 15. [Security model and known limits](#security-model-and-known-limits)
 16. [Repository layout](#repository-layout)
 17. [Roadmap](#roadmap)
-18. [Licensing and legal](#licensing-and-legal)
+18. [FAQ](#faq)
+19. [Licensing and legal](#licensing-and-legal)
 
 ## What it does
 
@@ -498,6 +507,24 @@ If REA reports a version different from the one the tiers were generated for, th
 7. [ ] Blocked target categories (banking, payments, government, telecom)
 8. [ ] Hindi and Marathi guides
 9. [ ] Legal review and acceptable-use policy
+
+## FAQ
+
+**What is sprintailab?** A governance proxy for AI agents that use REA (Reverse Engineer Anything). It decides, per call, whether the agent may analyze a given target, and records the decision.
+
+**Is it a fork of REA?** No. REA is included unmodified as a git submodule and started as a normal process. sprintailab only sits in front of it. REA is MIT-licensed, copyright morluto; see [NOTICE.md](NOTICE.md).
+
+**Does it stop someone running REA directly?** No. It governs use through this product. Anyone can still run upstream REA by itself.
+
+**Which AI agents work with it?** Any client that supports local stdio MCP servers, such as Claude Code, Cursor, Codex and Gemini CLI. The in-client authorization prompt depends on the client supporting MCP elicitation; otherwise the terminal path is used.
+
+**Can an agent authorize itself?** Not through the prompt or the CLI: the agent never sees the form, and the CLI refuses to run without an interactive terminal. An agent with same-user shell access could still edit the grants file; see [Security model and known limits](#security-model-and-known-limits).
+
+**Is it legal to reverse engineer software in India?** It depends on the software, the licence and the purpose. This project does not answer that. Questions for counsel (Copyright Act 1957, IT Act 2000, DPDP Act 2023, contracts) are listed in [docs/governance/policy.md](docs/governance/policy.md).
+
+**Does it send my data anywhere?** The proxy and REA run locally and the audit log stays on your machine. Your AI agent's model provider still sees the tool results the agent receives.
+
+**What is not built yet?** The sandbox for tools that execute code (blocked for now), roles and second approval, a central audit store, blocked target categories, and legal review.
 
 ## Licensing and legal
 
