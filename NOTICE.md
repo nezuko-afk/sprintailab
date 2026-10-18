@@ -3,13 +3,13 @@
 This project is built on top of **REA (Reverse Engineer Anything)**, an open-source
 project released under the MIT License.
 
-- Upstream: https://github.com/morluto/rea
+- Upstream: https://github.com/morluto/rea (Copyright (c) 2026 morluto, MIT)
 - Website: https://rea.tools
 - npm package: `rea-agents`
 
 ## Obligations when upstream code is included
 
-When REA source is copied into this repository (planned location: `upstream/`):
+When REA source is copied into this repository (currently included as the git submodule `upstream/rea`):
 
 1. Keep the upstream `LICENSE` file and copyright notice with that code.
 2. Keep `THIRD_PARTY_NOTICES.md` and any bundled third-party licenses intact.

@@ -1,0 +1,3 @@
+[submodule "upstream/rea"]
+	path = upstream/rea
+	url = https://github.com/morluto/rea.git
