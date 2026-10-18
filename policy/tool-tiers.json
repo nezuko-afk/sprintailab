@@ -1,0 +1,2271 @@
+{
+  "generatedFrom": {
+    "project": "morluto/rea",
+    "version": "6.6.0",
+    "commit": "b83b9caf4a5f0241a5fd370792f1aed1bffbb2cf",
+    "toolCount": 207
+  },
+  "failClosed": "Any tool name not listed here must be denied.",
+  "tiers": {
+    "0": {
+      "name": "Read-only",
+      "rule": "No spawned engines, no file writes, no network, no mutation"
+    },
+    "1": {
+      "name": "Local analysis",
+      "rule": "Spawns analysis engines or writes to REA's private workspace; no network, no target execution"
+    },
+    "2": {
+      "name": "Live system",
+      "rule": "Touches the network, a live UI, or alters the target or its analysis state"
+    },
+    "3": {
+      "name": "Executes or modifies",
+      "rule": "Runs foreign code or debuggers, instruments a process, or changes a device"
+    }
+  },
+  "counts": {
+    "0": 95,
+    "1": 50,
+    "2": 38,
+    "3": 24
+  },
+  "tools": [
+    {
+      "name": "address_name",
+      "kind": "official-proxy",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "address_to_file_offset",
+      "kind": "official-proxy",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "analyze_function",
+      "kind": "enhanced",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "analyze_javascript_application",
+      "kind": "electron-provider",
+      "tier": 1,
+      "derivedTier": 1,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "launchesProcess",
+        "writesFilesystem"
+      ]
+    },
+    {
+      "name": "analyze_swift_types",
+      "kind": "enhanced",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "analyze_web_bundle",
+      "kind": "browser-provider",
+      "tier": 2,
+      "derivedTier": 2,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork"
+      ]
+    },
+    {
+      "name": "annotate_native_function",
+      "kind": "official-proxy",
+      "tier": 1,
+      "derivedTier": 2,
+      "override": "Edits the analysis database, not the analyzed software",
+      "requiresSession": false,
+      "effects": [
+        "launchesProcess",
+        "mayDiscardData",
+        "mutatesTarget",
+        "writesFilesystem"
+      ]
+    },
+    {
+      "name": "batch_decompile",
+      "kind": "enhanced",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "binary_overview",
+      "kind": "enhanced",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "binary_session",
+      "kind": "session",
+      "tier": 1,
+      "derivedTier": 1,
+      "override": null,
+      "requiresSession": true,
+      "effects": [
+        "launchesProcess"
+      ]
+    },
+    {
+      "name": "build_call_path",
+      "kind": "session",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": true,
+      "effects": []
+    },
+    {
+      "name": "build_reconstruction_obligation_ledger",
+      "kind": "application",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "capture_adb_screen",
+      "kind": "adb-provider",
+      "tier": 2,
+      "derivedTier": 2,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork",
+        "launchesProcess",
+        "writesFilesystem"
+      ]
+    },
+    {
+      "name": "capture_browser_scenario",
+      "kind": "browser-provider",
+      "tier": 3,
+      "derivedTier": 3,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork",
+        "changesUiState",
+        "executesForeignCode",
+        "launchesProcess",
+        "mayDiscardData",
+        "mutatesTarget",
+        "writesFilesystem"
+      ]
+    },
+    {
+      "name": "capture_electron_scenario",
+      "kind": "electron-provider",
+      "tier": 3,
+      "derivedTier": 3,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork",
+        "changesUiState",
+        "executesForeignCode",
+        "launchesProcess",
+        "mayDiscardData",
+        "mutatesTarget",
+        "writesFilesystem"
+      ]
+    },
+    {
+      "name": "capture_native_ui_scenario",
+      "kind": "native-provider",
+      "tier": 3,
+      "derivedTier": 3,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork",
+        "changesUiState",
+        "executesForeignCode",
+        "launchesProcess",
+        "mayDiscardData",
+        "mutatesTarget",
+        "writesFilesystem"
+      ]
+    },
+    {
+      "name": "capture_process_scenario",
+      "kind": "session",
+      "tier": 3,
+      "derivedTier": 3,
+      "override": null,
+      "requiresSession": true,
+      "effects": [
+        "accessesNetwork",
+        "executesForeignCode",
+        "launchesProcess",
+        "writesFilesystem"
+      ]
+    },
+    {
+      "name": "capture_web_screenshot",
+      "kind": "browser-provider",
+      "tier": 2,
+      "derivedTier": 2,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork"
+      ]
+    },
+    {
+      "name": "close_binary",
+      "kind": "session",
+      "tier": 1,
+      "derivedTier": 1,
+      "override": null,
+      "requiresSession": true,
+      "effects": [
+        "mayDiscardData",
+        "writesFilesystem"
+      ]
+    },
+    {
+      "name": "close_frida_session",
+      "kind": "native-provider",
+      "tier": 3,
+      "derivedTier": 2,
+      "override": "Part of live process instrumentation",
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork",
+        "launchesProcess",
+        "mutatesTarget"
+      ]
+    },
+    {
+      "name": "close_gdb_session",
+      "kind": "native-provider",
+      "tier": 3,
+      "derivedTier": 3,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "executesForeignCode",
+        "launchesProcess",
+        "mutatesTarget"
+      ]
+    },
+    {
+      "name": "close_rizin_debug_session",
+      "kind": "native-provider",
+      "tier": 3,
+      "derivedTier": 3,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "executesForeignCode",
+        "launchesProcess",
+        "mutatesTarget"
+      ]
+    },
+    {
+      "name": "collect_adb_bugreport",
+      "kind": "adb-provider",
+      "tier": 2,
+      "derivedTier": 2,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork",
+        "launchesProcess",
+        "writesFilesystem"
+      ]
+    },
+    {
+      "name": "comment",
+      "kind": "official-proxy",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "compare_application_versions",
+      "kind": "application",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "compare_artifacts",
+      "kind": "session",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": true,
+      "effects": []
+    },
+    {
+      "name": "compare_bundles",
+      "kind": "session",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": true,
+      "effects": []
+    },
+    {
+      "name": "compare_functions",
+      "kind": "session",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": true,
+      "effects": []
+    },
+    {
+      "name": "compare_javascript_export_shapes",
+      "kind": "application",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "compare_managed_members",
+      "kind": "application",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": true,
+      "effects": []
+    },
+    {
+      "name": "compare_process_captures",
+      "kind": "session",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": true,
+      "effects": []
+    },
+    {
+      "name": "compare_source_to_bundle",
+      "kind": "application",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "compare_wasm_interfaces",
+      "kind": "application",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "compare_web_captures",
+      "kind": "browser-provider",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "compare_web_screenshots",
+      "kind": "browser-provider",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "correlate_static_and_runtime",
+      "kind": "session",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": true,
+      "effects": []
+    },
+    {
+      "name": "current_address",
+      "kind": "official-proxy",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "current_document",
+      "kind": "official-proxy",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "current_procedure",
+      "kind": "official-proxy",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "cutter_command",
+      "kind": "native-provider",
+      "tier": 3,
+      "derivedTier": 3,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork",
+        "changesUiState",
+        "executesForeignCode",
+        "launchesProcess",
+        "mutatesTarget",
+        "writesFilesystem"
+      ]
+    },
+    {
+      "name": "decode_android_resources",
+      "kind": "apktool-provider",
+      "tier": 1,
+      "derivedTier": 1,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "launchesProcess",
+        "writesFilesystem"
+      ]
+    },
+    {
+      "name": "decode_interface_builder",
+      "kind": "artifact-provider",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "decode_signal_recording",
+      "kind": "artifact-provider",
+      "tier": 1,
+      "derivedTier": 1,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "launchesProcess",
+        "writesFilesystem"
+      ]
+    },
+    {
+      "name": "decompile_jeb_item",
+      "kind": "jeb-provider",
+      "tier": 2,
+      "derivedTier": 2,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork"
+      ]
+    },
+    {
+      "name": "demangle_swift",
+      "kind": "native-provider",
+      "tier": 1,
+      "derivedTier": 1,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "launchesProcess"
+      ]
+    },
+    {
+      "name": "discover_webmcp_tools",
+      "kind": "browser-provider",
+      "tier": 2,
+      "derivedTier": 2,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork"
+      ]
+    },
+    {
+      "name": "evaluate_reconstruction_coverage",
+      "kind": "application",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "execute_rizin_command",
+      "kind": "native-provider",
+      "tier": 3,
+      "derivedTier": 3,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork",
+        "executesForeignCode",
+        "launchesProcess",
+        "mayDiscardData",
+        "mutatesTarget",
+        "writesFilesystem"
+      ]
+    },
+    {
+      "name": "export_evidence_bundle",
+      "kind": "session",
+      "tier": 1,
+      "derivedTier": 1,
+      "override": null,
+      "requiresSession": true,
+      "effects": [
+        "mayDiscardData",
+        "writesFilesystem"
+      ]
+    },
+    {
+      "name": "export_web_scripts",
+      "kind": "application",
+      "tier": 1,
+      "derivedTier": 1,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "writesFilesystem"
+      ]
+    },
+    {
+      "name": "extract_artifact",
+      "kind": "artifact-provider",
+      "tier": 1,
+      "derivedTier": 1,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "launchesProcess",
+        "writesFilesystem"
+      ]
+    },
+    {
+      "name": "extract_firmware",
+      "kind": "firmware-provider",
+      "tier": 1,
+      "derivedTier": 1,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "launchesProcess",
+        "writesFilesystem"
+      ]
+    },
+    {
+      "name": "find_changed_behavior",
+      "kind": "session",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": true,
+      "effects": []
+    },
+    {
+      "name": "find_xrefs_to_name",
+      "kind": "enhanced",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "frida_session_status",
+      "kind": "native-provider",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "gdb_console",
+      "kind": "native-provider",
+      "tier": 3,
+      "derivedTier": 3,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork",
+        "executesForeignCode",
+        "launchesProcess",
+        "mutatesTarget",
+        "writesFilesystem"
+      ]
+    },
+    {
+      "name": "gdb_session_status",
+      "kind": "native-provider",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "get_call_graph",
+      "kind": "enhanced",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "get_evidence_bundle",
+      "kind": "session",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": true,
+      "effects": []
+    },
+    {
+      "name": "get_navigation_context",
+      "kind": "session",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": true,
+      "effects": []
+    },
+    {
+      "name": "get_objc_classes",
+      "kind": "enhanced",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "get_objc_protocols",
+      "kind": "enhanced",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "goto_address",
+      "kind": "official-proxy",
+      "tier": 2,
+      "derivedTier": 2,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "changesUiState"
+      ]
+    },
+    {
+      "name": "identify_flutter_build",
+      "kind": "flutter-provider",
+      "tier": 1,
+      "derivedTier": 1,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "writesFilesystem"
+      ]
+    },
+    {
+      "name": "import_evidence_bundle",
+      "kind": "session",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": true,
+      "effects": []
+    },
+    {
+      "name": "import_managed_reconstruction",
+      "kind": "application",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": true,
+      "effects": []
+    },
+    {
+      "name": "inline_comment",
+      "kind": "official-proxy",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "inspect_adb_client",
+      "kind": "adb-provider",
+      "tier": 1,
+      "derivedTier": 1,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "launchesProcess"
+      ]
+    },
+    {
+      "name": "inspect_adb_device",
+      "kind": "adb-provider",
+      "tier": 2,
+      "derivedTier": 2,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork",
+        "launchesProcess"
+      ]
+    },
+    {
+      "name": "inspect_adb_display",
+      "kind": "adb-provider",
+      "tier": 2,
+      "derivedTier": 2,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork",
+        "launchesProcess"
+      ]
+    },
+    {
+      "name": "inspect_adb_package",
+      "kind": "adb-provider",
+      "tier": 2,
+      "derivedTier": 2,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork",
+        "launchesProcess"
+      ]
+    },
+    {
+      "name": "inspect_adb_window",
+      "kind": "adb-provider",
+      "tier": 2,
+      "derivedTier": 2,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork",
+        "launchesProcess"
+      ]
+    },
+    {
+      "name": "inspect_address_context",
+      "kind": "session",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": true,
+      "effects": []
+    },
+    {
+      "name": "inspect_analysis_view",
+      "kind": "application",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "inspect_android_class",
+      "kind": "android-provider",
+      "tier": 1,
+      "derivedTier": 1,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "launchesProcess",
+        "writesFilesystem"
+      ]
+    },
+    {
+      "name": "inspect_android_method",
+      "kind": "android-provider",
+      "tier": 1,
+      "derivedTier": 1,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "launchesProcess",
+        "writesFilesystem"
+      ]
+    },
+    {
+      "name": "inspect_android_package",
+      "kind": "android-provider",
+      "tier": 1,
+      "derivedTier": 1,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "launchesProcess",
+        "writesFilesystem"
+      ]
+    },
+    {
+      "name": "inspect_apktool_client",
+      "kind": "apktool-provider",
+      "tier": 1,
+      "derivedTier": 1,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "launchesProcess"
+      ]
+    },
+    {
+      "name": "inspect_artifact",
+      "kind": "artifact-provider",
+      "tier": 1,
+      "derivedTier": 1,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "launchesProcess",
+        "writesFilesystem"
+      ]
+    },
+    {
+      "name": "inspect_asset_catalog",
+      "kind": "artifact-provider",
+      "tier": 1,
+      "derivedTier": 1,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "launchesProcess"
+      ]
+    },
+    {
+      "name": "inspect_binary_layout",
+      "kind": "native-provider",
+      "tier": 1,
+      "derivedTier": 1,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "launchesProcess",
+        "writesFilesystem"
+      ]
+    },
+    {
+      "name": "inspect_dart_aot",
+      "kind": "flutter-provider",
+      "tier": 1,
+      "derivedTier": 1,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "writesFilesystem"
+      ]
+    },
+    {
+      "name": "inspect_electron_fuses",
+      "kind": "artifact-provider",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "inspect_electron_page",
+      "kind": "electron-provider",
+      "tier": 2,
+      "derivedTier": 2,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork"
+      ]
+    },
+    {
+      "name": "inspect_evm_interface",
+      "kind": "artifact-provider",
+      "tier": 1,
+      "derivedTier": 1,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "launchesProcess",
+        "writesFilesystem"
+      ]
+    },
+    {
+      "name": "inspect_firmware_regions",
+      "kind": "firmware-provider",
+      "tier": 1,
+      "derivedTier": 1,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "launchesProcess",
+        "writesFilesystem"
+      ]
+    },
+    {
+      "name": "inspect_go_binary",
+      "kind": "artifact-provider",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "inspect_jeb_client",
+      "kind": "jeb-provider",
+      "tier": 2,
+      "derivedTier": 2,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork"
+      ]
+    },
+    {
+      "name": "inspect_keyed_archive",
+      "kind": "artifact-provider",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "inspect_macho",
+      "kind": "native-provider",
+      "tier": 1,
+      "derivedTier": 1,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "launchesProcess"
+      ]
+    },
+    {
+      "name": "inspect_managed_artifact",
+      "kind": "managed-provider",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "inspect_managed_members",
+      "kind": "managed-provider",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "inspect_managed_native_boundaries",
+      "kind": "managed-provider",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "inspect_native_api",
+      "kind": "enhanced",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "inspect_native_data_type",
+      "kind": "official-proxy",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "inspect_native_dispatch_metadata",
+      "kind": "enhanced",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "inspect_native_instruction",
+      "kind": "official-proxy",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "inspect_native_load_image",
+      "kind": "official-proxy",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "inspect_packet_capture",
+      "kind": "artifact-provider",
+      "tier": 1,
+      "derivedTier": 1,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "launchesProcess",
+        "writesFilesystem"
+      ]
+    },
+    {
+      "name": "inspect_packet_fields",
+      "kind": "artifact-provider",
+      "tier": 1,
+      "derivedTier": 1,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "launchesProcess",
+        "writesFilesystem"
+      ]
+    },
+    {
+      "name": "inspect_pcap_capture",
+      "kind": "pcap-provider",
+      "tier": 1,
+      "derivedTier": 1,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "launchesProcess",
+        "writesFilesystem"
+      ]
+    },
+    {
+      "name": "inspect_pcap_client",
+      "kind": "pcap-provider",
+      "tier": 1,
+      "derivedTier": 1,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "launchesProcess",
+        "writesFilesystem"
+      ]
+    },
+    {
+      "name": "inspect_pe_resources",
+      "kind": "native-provider",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "inspect_plist",
+      "kind": "native-provider",
+      "tier": 1,
+      "derivedTier": 1,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "launchesProcess"
+      ]
+    },
+    {
+      "name": "inspect_recorded_crash",
+      "kind": "native-provider",
+      "tier": 1,
+      "derivedTier": 1,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "launchesProcess",
+        "writesFilesystem"
+      ]
+    },
+    {
+      "name": "inspect_rust_binary",
+      "kind": "artifact-provider",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "inspect_signal_decoders",
+      "kind": "artifact-provider",
+      "tier": 1,
+      "derivedTier": 1,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "launchesProcess",
+        "writesFilesystem"
+      ]
+    },
+    {
+      "name": "inspect_signature",
+      "kind": "native-provider",
+      "tier": 1,
+      "derivedTier": 1,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "launchesProcess"
+      ]
+    },
+    {
+      "name": "inspect_sqlite_database",
+      "kind": "artifact-provider",
+      "tier": 1,
+      "derivedTier": 1,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "launchesProcess",
+        "writesFilesystem"
+      ]
+    },
+    {
+      "name": "inspect_wasm_artifact",
+      "kind": "artifact-provider",
+      "tier": 1,
+      "derivedTier": 1,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "launchesProcess",
+        "writesFilesystem"
+      ]
+    },
+    {
+      "name": "inspect_web_event_listeners",
+      "kind": "browser-provider",
+      "tier": 2,
+      "derivedTier": 2,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork"
+      ]
+    },
+    {
+      "name": "inspect_web_network_capture",
+      "kind": "browser-provider",
+      "tier": 1,
+      "derivedTier": 1,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "launchesProcess",
+        "writesFilesystem"
+      ]
+    },
+    {
+      "name": "inspect_web_page",
+      "kind": "browser-provider",
+      "tier": 2,
+      "derivedTier": 2,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork"
+      ]
+    },
+    {
+      "name": "inspect_with_objdump",
+      "kind": "native-provider",
+      "tier": 1,
+      "derivedTier": 1,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "launchesProcess"
+      ]
+    },
+    {
+      "name": "install_adb_package",
+      "kind": "adb-provider",
+      "tier": 3,
+      "derivedTier": 3,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork",
+        "launchesProcess",
+        "mutatesDevice",
+        "mutatesTarget"
+      ]
+    },
+    {
+      "name": "instrument_with_frida",
+      "kind": "native-provider",
+      "tier": 3,
+      "derivedTier": 3,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork",
+        "executesForeignCode",
+        "launchesProcess",
+        "mutatesTarget"
+      ]
+    },
+    {
+      "name": "list_adb_devices",
+      "kind": "adb-provider",
+      "tier": 2,
+      "derivedTier": 2,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork",
+        "launchesProcess"
+      ]
+    },
+    {
+      "name": "list_adb_directory",
+      "kind": "adb-provider",
+      "tier": 2,
+      "derivedTier": 2,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork",
+        "launchesProcess"
+      ]
+    },
+    {
+      "name": "list_adb_features",
+      "kind": "adb-provider",
+      "tier": 2,
+      "derivedTier": 2,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork",
+        "launchesProcess"
+      ]
+    },
+    {
+      "name": "list_adb_packages",
+      "kind": "adb-provider",
+      "tier": 2,
+      "derivedTier": 2,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork",
+        "launchesProcess"
+      ]
+    },
+    {
+      "name": "list_adb_processes",
+      "kind": "adb-provider",
+      "tier": 2,
+      "derivedTier": 2,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork",
+        "launchesProcess"
+      ]
+    },
+    {
+      "name": "list_adb_services",
+      "kind": "adb-provider",
+      "tier": 2,
+      "derivedTier": 2,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork",
+        "launchesProcess"
+      ]
+    },
+    {
+      "name": "list_architectures",
+      "kind": "native-provider",
+      "tier": 1,
+      "derivedTier": 1,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "launchesProcess"
+      ]
+    },
+    {
+      "name": "list_bookmarks",
+      "kind": "official-proxy",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "list_browser_targets",
+      "kind": "browser-provider",
+      "tier": 2,
+      "derivedTier": 2,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork"
+      ]
+    },
+    {
+      "name": "list_cutter_sessions",
+      "kind": "native-provider",
+      "tier": 2,
+      "derivedTier": 2,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork"
+      ]
+    },
+    {
+      "name": "list_documents",
+      "kind": "official-proxy",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "list_electron_targets",
+      "kind": "electron-provider",
+      "tier": 2,
+      "derivedTier": 2,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork"
+      ]
+    },
+    {
+      "name": "list_frida_devices",
+      "kind": "native-provider",
+      "tier": 2,
+      "derivedTier": 2,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork",
+        "launchesProcess"
+      ]
+    },
+    {
+      "name": "list_frida_processes",
+      "kind": "native-provider",
+      "tier": 2,
+      "derivedTier": 2,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork",
+        "launchesProcess"
+      ]
+    },
+    {
+      "name": "list_javascript_runtime_targets",
+      "kind": "runtime-provider",
+      "tier": 2,
+      "derivedTier": 2,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork"
+      ]
+    },
+    {
+      "name": "list_jeb_units",
+      "kind": "jeb-provider",
+      "tier": 2,
+      "derivedTier": 2,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork"
+      ]
+    },
+    {
+      "name": "list_names",
+      "kind": "official-proxy",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "list_procedures",
+      "kind": "official-proxy",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "list_segments",
+      "kind": "official-proxy",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "list_strings",
+      "kind": "official-proxy",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "list_unknowns",
+      "kind": "session",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": true,
+      "effects": []
+    },
+    {
+      "name": "load_frida_script",
+      "kind": "native-provider",
+      "tier": 3,
+      "derivedTier": 3,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork",
+        "executesForeignCode",
+        "launchesProcess",
+        "mutatesTarget"
+      ]
+    },
+    {
+      "name": "next_address",
+      "kind": "official-proxy",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "observe_javascript_runtime",
+      "kind": "runtime-provider",
+      "tier": 2,
+      "derivedTier": 2,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork"
+      ]
+    },
+    {
+      "name": "observe_native_calls",
+      "kind": "native-provider",
+      "tier": 3,
+      "derivedTier": 3,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork",
+        "changesUiState",
+        "executesForeignCode",
+        "launchesProcess",
+        "writesFilesystem"
+      ]
+    },
+    {
+      "name": "observe_native_ui",
+      "kind": "native-provider",
+      "tier": 1,
+      "derivedTier": 1,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "launchesProcess",
+        "writesFilesystem"
+      ]
+    },
+    {
+      "name": "observe_web_execution",
+      "kind": "browser-provider",
+      "tier": 2,
+      "derivedTier": 2,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork",
+        "mayDiscardData",
+        "mutatesTarget"
+      ]
+    },
+    {
+      "name": "observe_web_session",
+      "kind": "browser-provider",
+      "tier": 2,
+      "derivedTier": 2,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork"
+      ]
+    },
+    {
+      "name": "open_binary",
+      "kind": "session",
+      "tier": 1,
+      "derivedTier": 1,
+      "override": null,
+      "requiresSession": true,
+      "effects": [
+        "launchesProcess"
+      ]
+    },
+    {
+      "name": "open_jeb_project",
+      "kind": "jeb-provider",
+      "tier": 2,
+      "derivedTier": 2,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork"
+      ]
+    },
+    {
+      "name": "prev_address",
+      "kind": "official-proxy",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "procedure_address",
+      "kind": "official-proxy",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "procedure_assembly",
+      "kind": "official-proxy",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "procedure_callees",
+      "kind": "official-proxy",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "procedure_callers",
+      "kind": "official-proxy",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "procedure_info",
+      "kind": "official-proxy",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "procedure_pseudo_code",
+      "kind": "official-proxy",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "procedure_references",
+      "kind": "official-proxy",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "project_android_application_graph",
+      "kind": "application",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "project_apple_application_graph",
+      "kind": "application",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "project_harmony_application_graph",
+      "kind": "application",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "project_managed_application_graph",
+      "kind": "application",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": true,
+      "effects": []
+    },
+    {
+      "name": "pull_adb_file",
+      "kind": "adb-provider",
+      "tier": 2,
+      "derivedTier": 2,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork",
+        "launchesProcess",
+        "writesFilesystem"
+      ]
+    },
+    {
+      "name": "pull_adb_package",
+      "kind": "adb-provider",
+      "tier": 2,
+      "derivedTier": 2,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork",
+        "launchesProcess",
+        "writesFilesystem"
+      ]
+    },
+    {
+      "name": "push_adb_file",
+      "kind": "adb-provider",
+      "tier": 3,
+      "derivedTier": 3,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork",
+        "launchesProcess",
+        "mutatesDevice",
+        "mutatesTarget",
+        "writesFilesystem"
+      ]
+    },
+    {
+      "name": "read_adb_logcat",
+      "kind": "adb-provider",
+      "tier": 2,
+      "derivedTier": 2,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork",
+        "launchesProcess"
+      ]
+    },
+    {
+      "name": "read_adb_setting",
+      "kind": "adb-provider",
+      "tier": 2,
+      "derivedTier": 2,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork",
+        "launchesProcess"
+      ]
+    },
+    {
+      "name": "read_bytes",
+      "kind": "official-proxy",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "read_function_instructions",
+      "kind": "official-proxy",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "reconcile_javascript_runtime",
+      "kind": "electron-provider",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "record_unknown",
+      "kind": "session",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": true,
+      "effects": []
+    },
+    {
+      "name": "recover_javascript_sources",
+      "kind": "application",
+      "tier": 1,
+      "derivedTier": 1,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "launchesProcess",
+        "writesFilesystem"
+      ]
+    },
+    {
+      "name": "resolve_adb_packages",
+      "kind": "adb-provider",
+      "tier": 2,
+      "derivedTier": 2,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork",
+        "launchesProcess"
+      ]
+    },
+    {
+      "name": "resolve_containing_procedure",
+      "kind": "official-proxy",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "resolve_native_call_targets",
+      "kind": "official-proxy",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "resume_frida_session",
+      "kind": "native-provider",
+      "tier": 3,
+      "derivedTier": 3,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork",
+        "executesForeignCode",
+        "launchesProcess",
+        "mutatesTarget"
+      ]
+    },
+    {
+      "name": "rizin_debug_command",
+      "kind": "native-provider",
+      "tier": 3,
+      "derivedTier": 3,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork",
+        "changesUiState",
+        "executesForeignCode",
+        "launchesProcess",
+        "mayDiscardData",
+        "mutatesTarget",
+        "writesFilesystem"
+      ]
+    },
+    {
+      "name": "rizin_debug_session_status",
+      "kind": "native-provider",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "search_android_classes",
+      "kind": "android-provider",
+      "tier": 1,
+      "derivedTier": 1,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "launchesProcess",
+        "writesFilesystem"
+      ]
+    },
+    {
+      "name": "search_bytes",
+      "kind": "official-proxy",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "search_procedures",
+      "kind": "official-proxy",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "search_strings",
+      "kind": "official-proxy",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "set_address_name",
+      "kind": "official-proxy",
+      "tier": 1,
+      "derivedTier": 2,
+      "override": "Edits the analysis database, not the analyzed software",
+      "requiresSession": false,
+      "effects": [
+        "mayDiscardData",
+        "mutatesTarget"
+      ]
+    },
+    {
+      "name": "set_addresses_names",
+      "kind": "official-proxy",
+      "tier": 1,
+      "derivedTier": 2,
+      "override": "Edits the analysis database, not the analyzed software",
+      "requiresSession": false,
+      "effects": [
+        "mayDiscardData",
+        "mutatesTarget"
+      ]
+    },
+    {
+      "name": "set_bookmark",
+      "kind": "official-proxy",
+      "tier": 1,
+      "derivedTier": 2,
+      "override": "Edits the analysis database, not the analyzed software",
+      "requiresSession": false,
+      "effects": [
+        "mayDiscardData",
+        "mutatesTarget"
+      ]
+    },
+    {
+      "name": "set_comment",
+      "kind": "official-proxy",
+      "tier": 1,
+      "derivedTier": 2,
+      "override": "Edits the analysis database, not the analyzed software",
+      "requiresSession": false,
+      "effects": [
+        "mayDiscardData",
+        "mutatesTarget"
+      ]
+    },
+    {
+      "name": "set_inline_comment",
+      "kind": "official-proxy",
+      "tier": 1,
+      "derivedTier": 2,
+      "override": "Edits the analysis database, not the analyzed software",
+      "requiresSession": false,
+      "effects": [
+        "mayDiscardData",
+        "mutatesTarget"
+      ]
+    },
+    {
+      "name": "start_adb_activity",
+      "kind": "adb-provider",
+      "tier": 3,
+      "derivedTier": 3,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork",
+        "launchesProcess",
+        "mutatesDevice",
+        "mutatesTarget"
+      ]
+    },
+    {
+      "name": "start_adb_app",
+      "kind": "adb-provider",
+      "tier": 3,
+      "derivedTier": 3,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork",
+        "launchesProcess",
+        "mutatesDevice",
+        "mutatesTarget"
+      ]
+    },
+    {
+      "name": "start_frida_session",
+      "kind": "native-provider",
+      "tier": 3,
+      "derivedTier": 2,
+      "override": "Attaches to or spawns a live process",
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork",
+        "launchesProcess",
+        "mutatesTarget"
+      ]
+    },
+    {
+      "name": "start_gdb_session",
+      "kind": "native-provider",
+      "tier": 1,
+      "derivedTier": 1,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "launchesProcess"
+      ]
+    },
+    {
+      "name": "start_rizin_debug_session",
+      "kind": "native-provider",
+      "tier": 3,
+      "derivedTier": 3,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "executesForeignCode",
+        "launchesProcess",
+        "mutatesTarget"
+      ]
+    },
+    {
+      "name": "stop_adb_app",
+      "kind": "adb-provider",
+      "tier": 3,
+      "derivedTier": 3,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork",
+        "launchesProcess",
+        "mutatesDevice",
+        "mutatesTarget"
+      ]
+    },
+    {
+      "name": "trace_android_references",
+      "kind": "android-provider",
+      "tier": 1,
+      "derivedTier": 1,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "launchesProcess",
+        "writesFilesystem"
+      ]
+    },
+    {
+      "name": "trace_application_feature",
+      "kind": "application",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "trace_call_path",
+      "kind": "enhanced",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "trace_dylib_resolution",
+      "kind": "artifact-provider",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "trace_feature",
+      "kind": "enhanced",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "trace_javascript_semantics",
+      "kind": "application",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "trace_native_ui_action",
+      "kind": "enhanced",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "trace_native_values",
+      "kind": "enhanced",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    },
+    {
+      "name": "trace_web_module_imports",
+      "kind": "application",
+      "tier": 2,
+      "derivedTier": 2,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork",
+        "launchesProcess",
+        "writesFilesystem"
+      ]
+    },
+    {
+      "name": "trace_web_source_location",
+      "kind": "application",
+      "tier": 1,
+      "derivedTier": 1,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "launchesProcess",
+        "writesFilesystem"
+      ]
+    },
+    {
+      "name": "uninstall_adb_package",
+      "kind": "adb-provider",
+      "tier": 3,
+      "derivedTier": 3,
+      "override": null,
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork",
+        "launchesProcess",
+        "mutatesDevice",
+        "mutatesTarget"
+      ]
+    },
+    {
+      "name": "unload_frida_script",
+      "kind": "native-provider",
+      "tier": 3,
+      "derivedTier": 2,
+      "override": "Part of live process instrumentation",
+      "requiresSession": false,
+      "effects": [
+        "accessesNetwork",
+        "launchesProcess",
+        "mutatesTarget"
+      ]
+    },
+    {
+      "name": "unset_bookmark",
+      "kind": "official-proxy",
+      "tier": 1,
+      "derivedTier": 2,
+      "override": "Edits the analysis database, not the analyzed software",
+      "requiresSession": false,
+      "effects": [
+        "mayDiscardData",
+        "mutatesTarget"
+      ]
+    },
+    {
+      "name": "update_unknown",
+      "kind": "session",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": true,
+      "effects": []
+    },
+    {
+      "name": "verify_managed_native_boundaries",
+      "kind": "application",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": true,
+      "effects": []
+    },
+    {
+      "name": "verify_reconstruction",
+      "kind": "session",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": true,
+      "effects": []
+    },
+    {
+      "name": "verify_unknown_resolution",
+      "kind": "session",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": true,
+      "effects": []
+    },
+    {
+      "name": "xrefs",
+      "kind": "official-proxy",
+      "tier": 0,
+      "derivedTier": 0,
+      "override": null,
+      "requiresSession": false,
+      "effects": []
+    }
+  ]
+}

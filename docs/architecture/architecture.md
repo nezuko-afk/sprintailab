@@ -84,8 +84,8 @@ flowchart LR
   misuse inside our product; they cannot stop it everywhere.
 - The authorization gate records a **declaration**. It does not prove ownership.
   Contracts and client onboarding must back it up.
-- Tool risk tiers will be derived from REA's generated tool catalog
-  (`upstream/rea/docs/mcp-contracts.md`, section "Generated catalog"). Not done yet.
+- Tool risk tiers come from REA's generated tool catalog and effect flags; see
+  `docs/governance/tool-tiers.md`. They must be regenerated whenever upstream changes.
 
 ## Open decisions
 

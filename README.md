@@ -36,8 +36,9 @@ Approved request, denied request, and runtime-capture flows:
 
 ## Governance and AI policy
 
-Controls, tool tiers and the list of questions for Indian legal counsel:
-[docs/governance/policy.md](docs/governance/policy.md). This is a draft, not legal advice.
+Controls and the list of questions for Indian legal counsel:
+[docs/governance/policy.md](docs/governance/policy.md). Tool risk tiers for all 207 REA tools:
+[docs/governance/tool-tiers.md](docs/governance/tool-tiers.md). This is a draft, not legal advice.
 
 ## Getting started
 
@@ -71,13 +72,15 @@ git add upstream/rea && git commit -m "Bump upstream REA"
 | `upstream/rea/` | Official REA as a git submodule, unmodified |
 | `docs/architecture/` | Architecture and trust boundaries |
 | `docs/sequence/` | Sequence diagrams |
-| `docs/governance/` | Policy, controls and legal checklist |
+| `docs/governance/` | Policy, controls, generated tool tiers and legal checklist |
+| `policy/` | Machine-readable policy data (`tool-tiers.json`) for the proxy |
+| `scripts/` | Generators, e.g. `generate-tool-tiers.mjs` |
 | `NOTICE.md` | Upstream attribution and license obligations |
 
 ## Roadmap
 
 1. [x] Repo scaffold, upstream submodule, architecture, sequence and policy drafts
-2. [ ] Classify REA tools into risk tiers from its generated tool catalog
+2. [x] Classify REA tools into risk tiers from its generated tool catalog (207 tools)
 3. [ ] MCP governance proxy skeleton that forwards to `rea mcp`
 4. [ ] Authorization gate and audit log
 5. [ ] Sandbox controller for runtime-capture tools

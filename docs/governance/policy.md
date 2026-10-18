@@ -14,16 +14,15 @@ Status: **draft for legal review**. This is engineering intent, not legal advice
 | 6 | Append-only audit log | Who analyzed what, when, under which declaration | Audit log |
 | 7 | Acceptable-use policy and contract terms | Legal backstop for what code cannot prevent | Commercial process |
 
-## Tool tiers (to be filled from REA's tool catalog)
+## Tool tiers
 
-| Tier | Meaning | Examples (to confirm against catalog) |
-| --- | --- | --- |
-| 0 | Read-only, static, on supplied files | .NET metadata, static JavaScript, APK manifest |
-| 1 | Reads from a live system or network | Website observation, adb device inspection |
-| 2 | Executes the target | Process capture, debugger sessions |
+Every REA tool is classified into one of four tiers from REA's own effect flags
+(207 tools in REA 6.6.0): Tier 0 read-only (95), Tier 1 local analysis (50),
+Tier 2 live system (38), Tier 3 executes or modifies (24).
 
-Classification must be done by reading the generated catalog in
-`upstream/rea/docs/mcp-contracts.md`. Do not rely on the examples above.
+- Full tables and rules: [tool-tiers.md](tool-tiers.md) (generated, do not edit by hand)
+- Machine-readable policy input: `policy/tool-tiers.json`
+- Unknown tools are denied (fail closed). Regenerate and review the diff on every upstream bump.
 
 ## Items for Indian legal counsel
 
