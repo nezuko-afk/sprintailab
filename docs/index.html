@@ -66,12 +66,14 @@ footer{margin-top:60px;color:var(--muted);font-size:14px}a{color:var(--accent)}
 </table>
 
 <h2>Try it</h2>
+<p>The offline demo needs no REA and no real target. It shows a denied call, an authorization, an allowed call, refused tools and a tampered audit log being caught.</p>
 <pre>git clone --recurse-submodules https://github.com/nezuko-afk/sprintailab.git
 cd sprintailab && npm install && npm run build && npm test
+node examples/demo.mjs
 claude mcp add sprintailab -- node "$PWD/dist/index.js"</pre>
 
 <h2>Honest status</h2>
-<p>Working end to end against REA 6.6.0 with 73 automated tests. Not built yet: sandbox, roles and second approval, central audit store, India-specific legal review. Not legal advice.</p>
+<p>Open source under the MIT License. Working end to end against REA 6.6.0 with 73 automated tests. Not built yet: sandbox, roles and second approval, central audit store, India-specific legal review. Not legal advice.</p>
 
 <h2>FAQ</h2>
 <details><summary>Is it a fork of REA?</summary><p>No. REA (MIT, by morluto) runs unmodified behind the proxy.</p></details>

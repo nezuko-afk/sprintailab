@@ -1,6 +1,7 @@
 # sprintailab: governed AI reverse engineering (MCP proxy for REA)
 
 [![Tests](https://img.shields.io/badge/tests-73%20passing-brightgreen)](src) [![Node](https://img.shields.io/badge/node-22.19%2B%20%7C%2024.11%2B-blue)](#prerequisites) [![Status](https://img.shields.io/badge/status-early%20build-orange)](#security-model-and-known-limits) [![Protocol](https://img.shields.io/badge/protocol-MCP-6e56cf)](https://modelcontextprotocol.io)
+[![CI](https://github.com/nezuko-afk/sprintailab/actions/workflows/ci.yml/badge.svg)](https://github.com/nezuko-afk/sprintailab/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 **sprintailab is an open-source governance layer for AI-assisted reverse engineering.** It is an MCP (Model Context Protocol) proxy that sits between an AI agent (Claude Code, Cursor, Codex, Gemini CLI) and [REA, Reverse Engineer Anything](https://github.com/morluto/rea). Before any analysis runs, it checks that a person has authorized the target, enforces risk tiers on all 207 REA tools, and writes every decision to a tamper-evident audit log.
 
@@ -11,6 +12,62 @@
 > **Status:** early build, working end to end against real REA 6.6.0. Built: tier policy, fail-closed unknown tools, authorization gate (client prompt or terminal), hash-chained audit log, 73 automated tests. **Not built:** sandbox for tier 3 tools, roles, central deployment, India-specific legal review. This is engineering work, not legal advice; see [Licensing and legal](#licensing-and-legal).
 
 **Keywords:** AI governance, responsible AI, reverse engineering, MCP server, Model Context Protocol, audit log, authorization, AI agent security, software due diligence, DPDP, India.
+## The four rules
+
+An agent with 207 analysis tools, 24 of which run or instrument code, should not decide for itself what it may look at. sprintailab puts four rules between the agent and REA:
+
+| Rule | What it means |
+| --- | --- |
+| **Authorize every target** | A person declares ownership or written permission for a folder, web origin, device or package, with an expiry. The agent cannot see or fill that step. |
+| **Tier every tool** | All 207 REA tools are classified by what they can do. Tier 3 (execute or modify) stays blocked until a sandbox exists. |
+| **Fail closed** | A tool that is not on the list, including one added upstream tomorrow, is denied. |
+| **Log every decision** | Each call is appended to a hash-chained log that `verify-audit` can check. |
+
+## See it work in a minute
+
+No REA, no network and no real target are needed. The demo runs the real policy, gate and audit code in a throwaway folder.
+
+```bash
+git clone https://github.com/nezuko-afk/sprintailab.git
+cd sprintailab
+npm install && npm run build
+node examples/demo.mjs
+```
+
+Output (ids and times differ on each run):
+
+```text
+
+1. An agent asks to analyze a client folder nobody has authorized
+  DENY   R3-authorization-required   analyze_javascript_application  ~/work/clientA/app
+
+2. A person authorizes that one folder for tier 1, for 4 hours
+  authorization e8ee3c1c scope ~/work/clientA/app expires 2026-10-18T13:55:29.780Z
+
+3. The same call, then a different client's folder
+  ALLOW  R0-allow                    analyze_javascript_application  ~/work/clientA/app
+  DENY   R3-authorization-required   analyze_javascript_application  ~/work/clientB/app
+
+4. Tools the policy refuses outright
+  DENY   R2-tier-above-limit         capture_process_scenario  ~/work/clientA/app
+  DENY   R1-unknown-tool             a_tool_added_upstream_tomorrow
+  limit raised to tier 3:            R4-sandbox-required  (no sandbox exists, so tier 3 still cannot run)
+
+5. The audit log is a hash chain; edit one record and verification fails
+  before tampering: {"ok":true,"records":5}
+  after tampering:  {"ok":false,"records":0,"brokenAt":1,"reason":"hash mismatch"}
+```
+
+To use it with a real agent, follow [Connect it to your agent](#connect-it-to-your-agent).
+
+## What comes from REA and what comes from sprintailab
+
+| Concern | Owner |
+| --- | --- |
+| Analysis of binaries, Electron apps, APKs, websites, .NET, firmware, with evidence records | REA (upstream, unmodified submodule) |
+| Who may analyze what, and the record of the declaration | sprintailab |
+| Tool risk tiers, fail-closed handling, tier 3 block | sprintailab |
+| Audit trail | sprintailab |
 
 ## Contents
 
@@ -455,7 +512,7 @@ If REA reports a version different from the one the tiers were generated for, th
 | `brew install node@24` says another process holds a lock | Use nvm instead of Homebrew for Node |
 | npm error `Cannot read properties of null (reading 'edgesOut')` | Old npm bug. Run `npx -y npm@11 install` |
 | `upstream/rea` is empty | `git submodule update --init --depth 1` |
-| `No matching version found for rea-agents@6.6.0` | That version is not on npm yet. Point the proxy at your own REA build (see [Connect it to your agent](#connect-it-to-your-agent)) |
+| `No matching version found for rea-agents@6.6.0` | REA 6.6.0 is not published on npm (npm has 6.7.0, and the tier list was generated for 6.6.0). Build the pinned submodule and point the proxy at it (see [Connect it to your agent](#connect-it-to-your-agent)). Unknown tools are denied, so a newer REA is safe but may expose fewer tools until the tiers are regenerated |
 | `REA's compiled runtime is missing` | Your REA checkout is not built. Run its build, or use the published package |
 | Proxy exits with `Could not start REA with: ...` | The command in `SPRINTAIL_REA_COMMAND` / `SPRINTAIL_REA_ARGS` failed. Run it by hand to see why |
 | Agent sees fewer tools than REA has | Expected: tier 3 and unknown tools are hidden. 183 of 207 at the default limit |
@@ -495,6 +552,9 @@ If REA reports a version different from the one the tiers were generated for, th
 | `docs/` | Architecture notes, sequence diagrams, governance policy, generated tier tables |
 | `upstream/rea/` | Official REA as a git submodule, unmodified |
 | `NOTICE.md` | Upstream attribution and license obligations |
+| `examples/demo.mjs` | Offline demo of allow, deny and audit tamper detection; `demo-output.txt` is a sample run |
+| `LICENSE`, `SECURITY.md`, `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md` | Project policies |
+| `.github/` | CI workflow and issue templates |
 
 ## Roadmap
 
@@ -507,6 +567,7 @@ If REA reports a version different from the one the tiers were generated for, th
 7. [ ] Blocked target categories (banking, payments, government, telecom)
 8. [ ] Hindi and Marathi guides
 9. [ ] Legal review and acceptable-use policy
+10. [ ] Regenerate tiers for the latest published REA (npm has 6.7.0; tiers are for 6.6.0)
 
 ## FAQ
 
@@ -529,7 +590,8 @@ If REA reports a version different from the one the tiers were generated for, th
 ## Licensing and legal
 
 - **Upstream:** built on REA (MIT, Copyright (c) 2026 morluto). Keep upstream license files intact; see [NOTICE.md](NOTICE.md). Do not present this project as the official REA.
-- **This project:** no license has been chosen yet, so by default all rights are reserved. Decide before inviting contributors or customers.
+- **This project:** [MIT License](LICENSE), Copyright (c) 2026 Pritam Patil. Contributions are accepted under the same license; see [CONTRIBUTING.md](CONTRIBUTING.md).
+- **Security reports:** see [SECURITY.md](SECURITY.md). Please report bypasses privately.
 - **Commercial tools:** IDA, Hopper and JEB need their own licenses. Neither REA nor this project grants any.
 - **Indian law:** questions to bring to counsel (Copyright Act 1957 decompilation and interoperability exceptions, IT Act 2000 unauthorized access, DPDP Act 2023, contract terms) are listed in [docs/governance/policy.md](docs/governance/policy.md). This is not legal advice.
 - **Responsible use:** use only on software you own or are authorized to analyze. Check licenses and local law before commercial use.

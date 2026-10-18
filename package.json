@@ -3,9 +3,34 @@
   "version": "0.1.0",
   "private": true,
   "description": "Governance proxy that sits between an AI agent and REA (rea mcp)",
+  "license": "MIT",
+  "author": "Pritam Patil",
+  "homepage": "https://github.com/nezuko-afk/sprintailab#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nezuko-afk/sprintailab.git"
+  },
+  "bugs": {
+    "url": "https://github.com/nezuko-afk/sprintailab/issues"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "ai-agents",
+    "governance",
+    "audit-log",
+    "reverse-engineering",
+    "rea",
+    "security"
+  ],
   "type": "module",
-  "bin": { "sprintailab-proxy": "dist/index.js", "sprintailab": "dist/cli-bin.js" },
-  "engines": { "node": "^22.19.0 || ^24.11.0 || >=26.0.0" },
+  "bin": {
+    "sprintailab-proxy": "dist/index.js",
+    "sprintailab": "dist/cli-bin.js"
+  },
+  "engines": {
+    "node": "^22.19.0 || ^24.11.0 || >=26.0.0"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc --noEmit -p tsconfig.json",

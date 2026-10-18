@@ -1,0 +1,19 @@
+
+1. An agent asks to analyze a client folder nobody has authorized
+  DENY   R3-authorization-required   analyze_javascript_application  ~/work/clientA/app
+
+2. A person authorizes that one folder for tier 1, for 4 hours
+  authorization e8ee3c1c scope ~/work/clientA/app expires 2026-10-18T13:55:29.780Z
+
+3. The same call, then a different client's folder
+  ALLOW  R0-allow                    analyze_javascript_application  ~/work/clientA/app
+  DENY   R3-authorization-required   analyze_javascript_application  ~/work/clientB/app
+
+4. Tools the policy refuses outright
+  DENY   R2-tier-above-limit         capture_process_scenario  ~/work/clientA/app
+  DENY   R1-unknown-tool             a_tool_added_upstream_tomorrow
+  limit raised to tier 3:            R4-sandbox-required  (no sandbox exists, so tier 3 still cannot run)
+
+5. The audit log is a hash chain; edit one record and verification fails
+  before tampering: {"ok":true,"records":5}
+  after tampering:  {"ok":false,"records":0,"brokenAt":1,"reason":"hash mismatch"}
