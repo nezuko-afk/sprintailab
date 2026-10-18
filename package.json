@@ -1,0 +1,27 @@
+{
+  "name": "sprintailab-governance-proxy",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Governance proxy that sits between an AI agent and REA (rea mcp)",
+  "type": "module",
+  "bin": { "sprintailab-proxy": "dist/index.js" },
+  "engines": { "node": "^22.19.0 || ^24.11.0 || >=26.0.0" },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run",
+    "smoke": "node scripts/smoke.mjs",
+    "start": "node dist/index.js",
+    "tiers:generate": "node scripts/generate-tool-tiers.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/client": "2.3.1",
+    "@modelcontextprotocol/server": "2.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "22.19.1",
+    "typescript": "7.0.2",
+    "vitest": "5.0.3",
+    "zod": "4.4.3"
+  }
+}

@@ -1,8 +1,15 @@
 # Architecture
 
-Status: **proposed design**. Nothing here is implemented yet. REA facts below are
-taken from the upstream README and its `docs/architecture.mermaid`; our own
-components are design intent.
+Status: **partly implemented**. REA facts below come from the upstream README and its
+`docs/architecture.mermaid`.
+
+| Component | State |
+| --- | --- |
+| MCP governance proxy (`src/proxy.ts`, `src/index.ts`) | Built, tested against real REA 6.6.0 |
+| Policy engine (`src/policy.ts`) | Built: tier limit and fail-closed unknown tools. No roles yet |
+| Audit log (`src/audit.ts`) | Built: hash-chained JSONL with `verifyChain` |
+| Authorization gate | Not built. Tiers 2 and 3 are simply denied for now |
+| Sandbox controller | Not built |
 
 ## Idea in one line
 
