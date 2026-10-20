@@ -19,7 +19,7 @@ Pages covered:
 ## Set up
 
 1. In n8n: Workflows, Import from file, choose `seo-autopilot.json`.
-2. Open the **Config** node and replace `REPLACE_SUPPORT_EMAIL`, `REPLACE_SURESH_EMAIL` and `REPLACE_SAMEER_EMAIL`. Do the same in **Email Error Notice**. The workflow refuses to run while any `REPLACE_` value is left.
+2. Check the **Config** node: sender is pritampatil@sprintailab.com; recipients are pritampatil@, sureshinchur@ and sameerk@sprintailab.com. **Email Error Notice** uses the same addresses.
 3. Create three credentials:
    - **SMTP** for the support mailbox (host, port, user, app password) and attach it to both email nodes.
    - **Header Auth** for Anthropic: name `x-api-key`, value your API key. Attach it to **AI Suggestions**. Optional: delete that node and the report still works without suggestions.

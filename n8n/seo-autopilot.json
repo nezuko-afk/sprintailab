@@ -62,13 +62,13 @@
             {
               "id": "afromEmail",
               "name": "fromEmail",
-              "value": "REPLACE_SUPPORT_EMAIL",
+              "value": "pritampatil@sprintailab.com",
               "type": "string"
             },
             {
               "id": "atoEmails",
               "name": "toEmails",
-              "value": "pritampatils@gmail.com,REPLACE_SURESH_EMAIL,REPLACE_SAMEER_EMAIL",
+              "value": "pritampatil@sprintailab.com,sureshinchur@sprintailab.com,sameerk@sprintailab.com",
               "type": "string"
             },
             {
@@ -326,8 +326,8 @@
         420
       ],
       "parameters": {
-        "fromEmail": "REPLACE_SUPPORT_EMAIL",
-        "toEmail": "pritampatils@gmail.com,REPLACE_SURESH_EMAIL,REPLACE_SAMEER_EMAIL",
+        "fromEmail": "pritampatil@sprintailab.com",
+        "toEmail": "pritampatil@sprintailab.com,sureshinchur@sprintailab.com,sameerk@sprintailab.com",
         "subject": "=[Sprint AI Lab SEO] workflow failed: {{ $json.execution.error.message }}",
         "emailFormat": "text",
         "text": "=The SEO autopilot workflow failed.\\n\\nNode: {{ $json.execution.lastNodeExecuted }}\\nError: {{ $json.execution.error.message }}\\nExecution: {{ $json.execution.url }}",
@@ -352,7 +352,7 @@
       "parameters": {
         "width": 760,
         "height": 180,
-        "content": "## SEO autopilot (Sprint AI Lab)\nWeekly: audit both pages, score them, compare with last run, ask AI for prioritised fixes, email the team and open a GitHub issue for the fixes.\n\n**Before activating:** fill the REPLACE_ values in the Config node and the error email node, then attach the three credentials (SMTP, Anthropic header key, GitHub). Changes are proposed as issues for a human to approve, never auto-published."
+        "content": "## SEO autopilot (Sprint AI Lab)\nWeekly: audit both pages, score them, compare with last run, ask AI for prioritised fixes, email the team and open a GitHub issue for the fixes.\n\n**Before activating:** attach the three credentials (SMTP, Anthropic header key, GitHub). Changes are proposed as issues for a human to approve, never auto-published."
       }
     }
   ],
