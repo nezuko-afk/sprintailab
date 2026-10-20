@@ -1,0 +1,496 @@
+{
+  "name": "Sprint AI Lab - SEO Autopilot",
+  "nodes": [
+    {
+      "id": "n1",
+      "name": "Weekly Schedule",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                1
+              ],
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "n2",
+      "name": "Run Now (manual)",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        200
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "n3",
+      "name": "Config",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        240,
+        100
+      ],
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "aurls",
+              "name": "urls",
+              "value": "https://nezuko-afk.github.io/sprintailab/,https://www.sprintailab.com/app/governed-ai-reverse-engineering.html",
+              "type": "string"
+            },
+            {
+              "id": "akeywords",
+              "name": "keywords",
+              "value": "MCP governance proxy, AI reverse engineering, REA, audit log, AI governance",
+              "type": "string"
+            },
+            {
+              "id": "afromEmail",
+              "name": "fromEmail",
+              "value": "REPLACE_SUPPORT_EMAIL",
+              "type": "string"
+            },
+            {
+              "id": "atoEmails",
+              "name": "toEmails",
+              "value": "pritampatils@gmail.com,REPLACE_SURESH_EMAIL,REPLACE_SAMEER_EMAIL",
+              "type": "string"
+            },
+            {
+              "id": "agithubOwner",
+              "name": "githubOwner",
+              "value": "nezuko-afk",
+              "type": "string"
+            },
+            {
+              "id": "agithubRepo",
+              "name": "githubRepo",
+              "value": "sprintailab",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "n4",
+      "name": "Expand URLs",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        100
+      ],
+      "parameters": {
+        "jsCode": "// n8n Code node (Run Once for All Items): validate config, emit one item per page URL.\nconst cfg = $('Config').first().json;\nconst placeholders = Object.entries(cfg).filter(([, v]) => String(v).includes('REPLACE_')).map(([k]) => k);\nif (placeholders.length) {\n  throw new Error('Fill in the Config node first. Still placeholders: ' + placeholders.join(', '));\n}\nreturn String(cfg.urls).split(',').map(u => u.trim()).filter(Boolean).map(url => ({ json: { url } }));\n"
+      }
+    },
+    {
+      "id": "n5",
+      "name": "Fetch Page",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        720,
+        100
+      ],
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "options": {
+          "timeout": 30000,
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "text"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "n6",
+      "name": "PageSpeed",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        960,
+        100
+      ],
+      "parameters": {
+        "url": "=https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url={{ encodeURIComponent($('Expand URLs').item.json.url) }}&strategy=mobile&category=seo&category=performance",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "id": "n7",
+      "name": "Audit",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        100
+      ],
+      "parameters": {
+        "jsCode": "// n8n Code node (Run Once for All Items): SEO audit of every fetched page.\nconst cfg = $('Config').first().json;\nconst keywords = String(cfg.keywords).split(',').map(s => s.trim().toLowerCase()).filter(Boolean);\nconst urls = $('Expand URLs').all().map(i => i.json.url);\nconst fetched = $('Fetch Page').all();\nconst speed = $('PageSpeed').all();\nconst sd = $getWorkflowStaticData('global');\nsd.history = sd.history || {};\n\nconst strip = h => h.replace(/<script[\\s\\S]*?<\\/script>|<style[\\s\\S]*?<\\/style>/gi, ' ').replace(/<[^>]+>/g, ' ').replace(/&[a-z#0-9]+;/gi, ' ').replace(/\\s+/g, ' ').trim();\nconst attr = (tag, name) => { const m = tag.match(new RegExp(name + '\\\\s*=\\\\s*(\"([^\"]*)\"|\\'([^\\']*)\\')', 'i')); return m ? (m[2] ?? m[3]) : null; };\nconst metaTags = html => html.match(/<meta\\b[^>]*>/gi) || [];\nconst meta = (html, key, val) => { for (const t of metaTags(html)) { if ((attr(t, key) || '').toLowerCase() === val) return attr(t, 'content'); } return null; };\nconst linkTag = (html, rel) => { for (const t of html.match(/<link\\b[^>]*>/gi) || []) { if ((attr(t, 'rel') || '').toLowerCase() === rel) return attr(t, 'href'); } return null; };\n\nasync function probe(url) {\n  try {\n    const r = await this.helpers.httpRequest({ url, returnFullResponse: true, ignoreHttpStatusCode: true, json: false, timeout: 20000 });\n    return { status: r.statusCode, body: typeof r.body === 'string' ? r.body : JSON.stringify(r.body) };\n  } catch (e) { return { status: 0, body: '' }; }\n}\n\nconst results = [];\nfor (let i = 0; i < urls.length; i++) {\n  const url = urls[i];\n  const f = fetched[i] ? fetched[i].json : {};\n  const status = f.statusCode || 0;\n  const html = typeof f.data === 'string' ? f.data : '';\n  const origin = new URL(url).origin;\n  const title = (html.match(/<title[^>]*>([\\s\\S]*?)<\\/title>/i) || [, ''])[1].trim();\n  const desc = meta(html, 'name', 'description') || '';\n  const canonical = linkTag(html, 'canonical');\n  const h1s = html.match(/<h1\\b[\\s\\S]*?<\\/h1>/gi) || [];\n  const h1Text = h1s.length ? strip(h1s[0]).toLowerCase() : '';\n  const robotsMeta = (meta(html, 'name', 'robots') || '').toLowerCase();\n  const imgs = html.match(/<img\\b[^>]*>/gi) || [];\n  const imgsNoAlt = imgs.filter(t => !(attr(t, 'alt') || '').trim()).length;\n  const text = strip(html);\n  const words = text ? text.split(' ').length : 0;\n  const hrefs = (html.match(/<a\\b[^>]*href\\s*=\\s*[\"'][^\"']+[\"']/gi) || []).map(a => attr(a, 'href'));\n  const internal = hrefs.filter(h => h.startsWith('/') || h.startsWith(origin)).length;\n  const external = hrefs.filter(h => /^https?:\\/\\//.test(h) && !h.startsWith(origin)).length;\n  let jsonldOk = false, jsonldCount = 0;\n  for (const m of html.matchAll(/<script[^>]*application\\/ld\\+json[^>]*>([\\s\\S]*?)<\\/script>/gi)) {\n    jsonldCount++; try { JSON.parse(m[1]); jsonldOk = true; } catch (e) { jsonldOk = false; break; }\n  }\n  const kwInTitle = keywords.some(k => title.toLowerCase().includes(k));\n  const kwInH1 = keywords.some(k => h1Text.includes(k));\n  const kwInDesc = keywords.some(k => desc.toLowerCase().includes(k));\n  const robots = await probe.call(this, origin + '/robots.txt');\n  const sitemap = await probe.call(this, origin + '/sitemap.xml');\n  const robotsOk = robots.status === 200 && /user-agent/i.test(robots.body);\n  const sitemapOk = sitemap.status === 200 && /<urlset|<sitemapindex/i.test(sitemap.body);\n  const sitemapListsPage = sitemapOk && sitemap.body.includes(url.replace(/\\/$/, ''));\n\n  const checks = [\n    ['Page returns HTTP 200', status === 200, 10, 'Status was ' + status],\n    ['Title 30-60 characters', title.length >= 30 && title.length <= 60, 8, 'Title is ' + title.length + ' characters'],\n    ['Keyword in title', kwInTitle, 6, 'None of the target keywords appear in the title'],\n    ['Meta description 70-160 characters', desc.length >= 70 && desc.length <= 160, 8, 'Description is ' + desc.length + ' characters'],\n    ['Keyword in meta description', kwInDesc, 3, 'No target keyword in the description'],\n    ['Canonical link present', !!canonical, 6, 'Missing <link rel=\"canonical\">'],\n    ['Exactly one H1', h1s.length === 1, 6, 'Found ' + h1s.length + ' H1 tags'],\n    ['Keyword in H1', kwInH1, 4, 'No target keyword in the H1'],\n    ['Indexable (no noindex)', !robotsMeta.includes('noindex'), 10, 'Robots meta contains noindex'],\n    ['Open Graph title, description, image', !!(meta(html, 'property', 'og:title') && meta(html, 'property', 'og:description') && meta(html, 'property', 'og:image')), 5, 'Missing og:title, og:description or og:image'],\n    ['Twitter card', !!meta(html, 'name', 'twitter:card'), 2, 'Missing twitter:card'],\n    ['Valid JSON-LD structured data', jsonldOk, 8, jsonldCount ? 'JSON-LD present but invalid' : 'No JSON-LD structured data'],\n    ['Viewport meta (mobile)', !!meta(html, 'name', 'viewport'), 4, 'Missing viewport meta'],\n    ['html lang attribute', /<html[^>]*\\blang\\s*=/i.test(html), 2, 'Missing lang on <html>'],\n    ['Images have alt text', imgsNoAlt === 0, 3, imgsNoAlt + ' image(s) without alt'],\n    ['At least 300 words of text', words >= 300, 5, 'Only ' + words + ' words'],\n    ['3+ internal links', internal >= 3, 3, 'Only ' + internal + ' internal links'],\n    ['Links to an authoritative external source', external >= 1, 2, 'No external links'],\n    ['robots.txt reachable', robotsOk, 4, origin + '/robots.txt returned ' + robots.status],\n    ['sitemap.xml reachable', sitemapOk, 5, origin + '/sitemap.xml returned ' + sitemap.status],\n    ['Page listed in sitemap', sitemapListsPage, 4, 'Page URL not found in sitemap.xml']\n  ].map(([name, pass, weight, detail]) => ({ name, pass: !!pass, weight, detail }));\n\n  const total = checks.reduce((a, c) => a + c.weight, 0);\n  const got = checks.filter(c => c.pass).reduce((a, c) => a + c.weight, 0);\n  const score = Math.round((got / total) * 100);\n  const lh = (speed[i] && speed[i].json && speed[i].json.lighthouseResult && speed[i].json.lighthouseResult.categories) || {};\n  const prev = sd.history[url];\n  sd.history[url] = { score, at: new Date().toISOString() };\n  results.push({\n    url, status, score,\n    previousScore: prev ? prev.score : null,\n    delta: prev ? score - prev.score : null,\n    lighthouse: { seo: lh.seo ? Math.round(lh.seo.score * 100) : null, performance: lh.performance ? Math.round(lh.performance.score * 100) : null },\n    failing: checks.filter(c => !c.pass),\n    passing: checks.filter(c => c.pass).map(c => c.name)\n  });\n}\nreturn [{ json: { results, avgScore: Math.round(results.reduce((a, r) => a + r.score, 0) / (results.length || 1)), runAt: new Date().toISOString() } }];\n"
+      }
+    },
+    {
+      "id": "n8",
+      "name": "AI Suggestions",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1440,
+        100
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "anthropic-version",
+              "value": "2023-06-01"
+            },
+            {
+              "name": "content-type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({\n  model: 'claude-sonnet-5-5',\n  max_tokens: 1500,\n  system: 'You are a senior technical SEO. Given an audit of two pages for an open-source MCP governance proxy project (sprintailab), return at most 8 concrete, prioritised fixes. For each: what to change, exact suggested text where relevant, and why. Never suggest keyword stuffing, hidden text, fake reviews or link schemes. Do not promise rankings.',\n  messages: [{ role: 'user', content: 'Target keywords: ' + $('Config').first().json.keywords + '\\n\\nAudit JSON:\\n' + JSON.stringify($('Audit').first().json.results) }]\n}) }}",
+        "options": {
+          "timeout": 90000
+        }
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "",
+          "name": "Anthropic API key (header x-api-key)"
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "id": "n9",
+      "name": "Build Report",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1680,
+        100
+      ],
+      "parameters": {
+        "jsCode": "// n8n Code node (Run Once for All Items): build the email and the GitHub issue from audit + AI suggestions.\nconst audit = $('Audit').first().json;\nconst ai = ($('AI Suggestions').first().json.content || []).map(c => c.text || '').join('\\n').trim() || '(AI suggestions unavailable this run.)';\nconst esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');\nconst arrow = d => d === null ? 'first run' : (d > 0 ? '+' + d + ' (up)' : d < 0 ? d + ' (down)' : 'no change');\nconst rows = audit.results.map(r => `<h3>${esc(r.url)}</h3>\n<p>SEO score <b>${r.score}/100</b> (${arrow(r.delta)}). Lighthouse SEO: ${r.lighthouse.seo ?? 'n/a'}, performance: ${r.lighthouse.performance ?? 'n/a'}.</p>\n${r.failing.length ? '<ul>' + r.failing.map(f => `<li><b>${esc(f.name)}</b>: ${esc(f.detail)}</li>`).join('') + '</ul>' : '<p>All checks pass.</p>'}`).join('\\n');\nconst html = `<div style=\"font-family:system-ui,sans-serif;max-width:720px\"><h2>Sprint AI Lab SEO report</h2>\n<p>Average score: <b>${audit.avgScore}/100</b>. Run at ${audit.runAt}.</p>${rows}\n<h3>Suggested next improvements (AI draft, review before applying)</h3><pre style=\"white-space:pre-wrap\">${esc(ai)}</pre>\n<p style=\"color:#666;font-size:12px\">Automated weekly by the SEO autopilot workflow. Rankings are not guaranteed; this report measures on-page and technical SEO.</p></div>`;\nconst md = audit.results.map(r => `### ${r.url}\\nScore **${r.score}/100** (${arrow(r.delta)})\\n\\n` + (r.failing.length ? r.failing.map(f => `- [ ] **${f.name}**: ${f.detail}`).join('\\n') : 'All checks pass.')).join('\\n\\n') + '\\n\\n### Suggested improvements (AI draft, review before applying)\\n' + ai;\nconst anyFail = audit.results.some(r => r.failing.length > 0);\nreturn [{ json: { subject: `[Sprint AI Lab SEO] avg ${audit.avgScore}/100 - ${anyFail ? audit.results.reduce((a, r) => a + r.failing.length, 0) + ' issue(s) to fix' : 'all clear'}`, html, issueTitle: `SEO autopilot: ${audit.runAt.slice(0, 10)} (avg ${audit.avgScore}/100)`, issueBody: md, anyFail } }];\n"
+      }
+    },
+    {
+      "id": "n10",
+      "name": "Send Report Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1920,
+        0
+      ],
+      "parameters": {
+        "fromEmail": "={{ $('Config').first().json.fromEmail }}",
+        "toEmail": "={{ $('Config').first().json.toEmails }}",
+        "subject": "={{ $json.subject }}",
+        "emailFormat": "html",
+        "html": "={{ $json.html }}",
+        "options": {}
+      },
+      "credentials": {
+        "smtp": {
+          "id": "",
+          "name": "Support SMTP"
+        }
+      }
+    },
+    {
+      "id": "n11",
+      "name": "Has issues?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1920,
+        220
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $json.anyFail }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "n12",
+      "name": "Open GitHub Issue",
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1,
+      "position": [
+        2160,
+        200
+      ],
+      "parameters": {
+        "resource": "issue",
+        "operation": "create",
+        "owner": {
+          "__rl": true,
+          "value": "={{ $('Config').first().json.githubOwner }}",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "={{ $('Config').first().json.githubRepo }}",
+          "mode": "name"
+        },
+        "title": "={{ $json.issueTitle }}",
+        "body": "={{ $json.issueBody }}",
+        "labels": [
+          {
+            "label": "seo"
+          }
+        ]
+      },
+      "credentials": {
+        "githubApi": {
+          "id": "",
+          "name": "GitHub (issues write)"
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "id": "n13",
+      "name": "On Workflow Error",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        420
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "n14",
+      "name": "Email Error Notice",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        240,
+        420
+      ],
+      "parameters": {
+        "fromEmail": "REPLACE_SUPPORT_EMAIL",
+        "toEmail": "pritampatils@gmail.com,REPLACE_SURESH_EMAIL,REPLACE_SAMEER_EMAIL",
+        "subject": "=[Sprint AI Lab SEO] workflow failed: {{ $json.execution.error.message }}",
+        "emailFormat": "text",
+        "text": "=The SEO autopilot workflow failed.\\n\\nNode: {{ $json.execution.lastNodeExecuted }}\\nError: {{ $json.execution.error.message }}\\nExecution: {{ $json.execution.url }}",
+        "options": {}
+      },
+      "credentials": {
+        "smtp": {
+          "id": "",
+          "name": "Support SMTP"
+        }
+      }
+    },
+    {
+      "id": "n15",
+      "name": "Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -40,
+        -220
+      ],
+      "parameters": {
+        "width": 760,
+        "height": 180,
+        "content": "## SEO autopilot (Sprint AI Lab)\nWeekly: audit both pages, score them, compare with last run, ask AI for prioritised fixes, email the team and open a GitHub issue for the fixes.\n\n**Before activating:** fill the REPLACE_ values in the Config node and the error email node, then attach the three credentials (SMTP, Anthropic header key, GitHub). Changes are proposed as issues for a human to approve, never auto-published."
+      }
+    }
+  ],
+  "connections": {
+    "Weekly Schedule": {
+      "main": [
+        [
+          {
+            "node": "Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run Now (manual)": {
+      "main": [
+        [
+          {
+            "node": "Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Config": {
+      "main": [
+        [
+          {
+            "node": "Expand URLs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Expand URLs": {
+      "main": [
+        [
+          {
+            "node": "Fetch Page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Page": {
+      "main": [
+        [
+          {
+            "node": "PageSpeed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PageSpeed": {
+      "main": [
+        [
+          {
+            "node": "Audit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Audit": {
+      "main": [
+        [
+          {
+            "node": "AI Suggestions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Suggestions": {
+      "main": [
+        [
+          {
+            "node": "Build Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Report": {
+      "main": [
+        [
+          {
+            "node": "Send Report Email",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Has issues?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has issues?": {
+      "main": [
+        [
+          {
+            "node": "Open GitHub Issue",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "On Workflow Error": {
+      "main": [
+        [
+          {
+            "node": "Email Error Notice",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Calcutta",
+    "saveManualExecutions": true
+  },
+  "pinData": {},
+  "tags": []
+}
